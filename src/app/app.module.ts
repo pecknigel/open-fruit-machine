@@ -4,15 +4,15 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MachineComponent } from './components/machine/machine.component';
-import { MachineReelsComponent } from './components/machine-reels/machine-reels.component';
-import { MachineReelComponent } from './components/machine-reel/machine-reel.component';
+import { ReelsComponent } from './components/machine-reels/reels.component';
+import { ReelItemComponent } from './components/machine-reel-item/reel-item.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MachineComponent,
-    MachineReelsComponent,
-    MachineReelComponent
+    ReelsComponent,
+    ReelItemComponent
   ],
   imports: [
     BrowserModule,
