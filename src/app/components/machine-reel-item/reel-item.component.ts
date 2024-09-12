@@ -13,6 +13,7 @@ export class ReelItemComponent implements OnInit {
     'orange': ['reel-item-orange.svg', 'Orange'],
     'grapes': ['reel-item-grapes.svg', 'Grapes'],
     'lemon': ['reel-item-lemon.svg', 'Lemon'],
+    'cherries': ['reel-item-cherries.svg', 'Cherries'],
   };
 
   ngOnInit() {

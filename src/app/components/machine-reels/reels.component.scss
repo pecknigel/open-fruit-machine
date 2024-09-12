@@ -1,4 +1,4 @@
-:host {
+.machine-reels-container {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -7,6 +7,27 @@
   height: 100%;
   border: 20px solid #c11d5d;
   box-sizing: content-box;
+}
+
+#debug {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 30px);
+  background: white;
+  width: 120px;
+  height: 300px;
+  h2 {
+    padding: 3px;
+    margin: 0 0 3px;
+    font-size: 14px;
+    background: #cccccc;
+    border: 1px solid black;
+  }
+  .reel-items {
+    padding: 3px;
+    margin: 0 0 3px;
+    border: 1px solid black;
+  }
 }
 
 $border-color: black;
@@ -43,21 +64,11 @@ $border-color: rgb(163, 147, 147);
     left: calc((100% / 3) + 10px);
   }
   &:nth-child(3) {
-    left: calc((100% / 3) * 2 + 20px);
+    left: calc(((100% / 3) + 10px) * 2);
   }
   > app-machine-reel-item {
     position: absolute;
     left: 5%;
     width: 90%;
-    --one-third: calc(100% / 3);
-    &:nth-child(1) {
-      top: var(--top-pos);
-    }
-    &:nth-child(2) {
-      top: calc(var(--one-third) + var(--top-pos));
-    }
-    &:nth-child(3) {
-      top: calc(var(--one-third) * 2 + var(--top-pos));
-    }
   }
 }

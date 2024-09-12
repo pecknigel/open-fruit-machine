@@ -1,17 +1,19 @@
-<div class="machine-reels">
-  <div class="machine-reel" [style.--top-pos]="reelOneTopPos + '%'">
-    <app-machine-reel-item [type]="'orange'"></app-machine-reel-item>
-    <app-machine-reel-item [type]="'grapes'"></app-machine-reel-item>
-    <app-machine-reel-item [type]="'lemon'"></app-machine-reel-item>
+<div class="machine-reels-container">
+  <div class="machine-reels">
+    <div class="machine-reel" *ngFor="let reel of reelPositions; let i = index">
+      <app-machine-reel-item *ngFor="let item of reel" [type]="item[0]" [style.top]="item[1] + '%'"></app-machine-reel-item>
+    </div>
   </div>
-  <div class="machine-reel" [style.--top-pos]="reelTwoTopPos + '%'">
-    <app-machine-reel-item [type]="'orange'"></app-machine-reel-item>
-    <app-machine-reel-item [type]="'grapes'"></app-machine-reel-item>
-    <app-machine-reel-item [type]="'lemon'"></app-machine-reel-item>
-  </div>
-  <div class="machine-reel" [style.--top-pos]="reelThreeTopPos + '%'">
-    <app-machine-reel-item [type]="'orange'"></app-machine-reel-item>
-    <app-machine-reel-item [type]="'grapes'"></app-machine-reel-item>
-    <app-machine-reel-item [type]="'lemon'"></app-machine-reel-item>
+</div>
+
+<div id="debug">
+  <div>
+    <div *ngFor="let reel of reelPositions; let i = index">
+      <h2>Reel {{i + 1}}</h2>
+      <div class="reel-items" *ngFor="let item of reel">
+        <div>Type: {{item[0]}}</div>
+        <div>Value: {{item[1] | number:'1.000'}}</div>
+      </div>
+    </div>
   </div>
 </div>

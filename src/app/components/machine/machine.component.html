@@ -1,3 +1,6 @@
 <main>
-  <app-machine-reels></app-machine-reels>
+  <app-machine-reels #reelsComponent></app-machine-reels>
 </main>
+<menu>
+  <button (click)="reelsComponent.toggleSpin()">{{ reelsComponent.isReelsSpinning ? 'Stop' : 'Start' }}</button>
+</menu>

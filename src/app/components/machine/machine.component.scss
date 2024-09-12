@@ -6,3 +6,24 @@ main {
   width: 70%;
   height: 70%;
 }
+
+menu {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  button {
+    font-size: 36px;
+    color: orange;
+    background: mediumvioletred;
+    border: 10px outset violet;
+    text-transform: uppercase;
+    width: 200px;
+    height: 80px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    :active {
+      border-style: inset;
+    }
+  }
+}
