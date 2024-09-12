@@ -16,6 +16,8 @@ type Reels = ReelItemData[][];
   styleUrl: './reels.component.scss'
 })
 export class ReelsComponent implements OnInit, AfterViewInit {
+  protected showDebug: boolean = false;
+
   private reelsSpinning?: any;
   private stopSpinning: boolean = false;
   private oneThird = 33.333;

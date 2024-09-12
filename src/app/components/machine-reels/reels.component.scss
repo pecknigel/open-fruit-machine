@@ -13,20 +13,40 @@
   position: absolute;
   top: 0;
   left: calc(100% + 30px);
-  background: white;
   width: 120px;
-  height: 300px;
+  text-align: left;
+  button {
+    float: right;
+    font-size: 22px;
+    border: none;
+  }
+  &.shown {
+    button {
+      transform: rotate(180deg);
+    }
+  }
+  .debug-content {
+    clear: both;
+    display: none;
+  }
+  &.shown {
+    .debug-content {
+      display: block;
+    }
+  }
   h2 {
     padding: 3px;
-    margin: 0 0 3px;
+    margin: 0;
     font-size: 14px;
+    color: #912600;
     background: #cccccc;
-    border: 1px solid black;
+    border: 1px outset orangered;
   }
   .reel-items {
     padding: 3px;
-    margin: 0 0 3px;
-    border: 1px solid black;
+    border: 1px solid orangered;
+    background: white;
+    font-family: monospace;
   }
 }
 
