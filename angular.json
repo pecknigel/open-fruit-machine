@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "fruit-machine": {
+    "open-fruit-machine": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -42,7 +42,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/fruit-machine",
+            "outputPath": "dist/open-fruit-machine",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -89,10 +89,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "fruit-machine:build:production"
+              "buildTarget": "open-fruit-machine:build:production"
             },
             "development": {
-              "buildTarget": "fruit-machine:build:development"
+              "buildTarget": "open-fruit-machine:build:development"
             }
           },
           "defaultConfiguration": "development"
