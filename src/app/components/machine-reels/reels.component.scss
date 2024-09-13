@@ -13,16 +13,21 @@
   position: absolute;
   top: 0;
   left: calc(100% + 30px);
-  width: 120px;
+  width: 150px;
   text-align: left;
   button {
     float: right;
     font-size: 22px;
     border: none;
+    cursor: pointer;
+  }
+  table {
+    width: 100%;
   }
   &.shown {
     button {
       transform: rotate(180deg);
+      margin-bottom: 5px;
     }
   }
   .debug-content {
