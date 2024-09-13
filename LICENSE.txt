@@ -1,8 +1,14 @@
 
 Open Fruit Machine is licensed under the Creative Commons Attribution-NonCommercial 4.0 International, meaning it can
-be shared and adapted for non-commercial purposes, as long as the original author is credited. Derivative works are allowed.
+be shared and adapted for non-commercial purposes, as long as the original author is credited.
 
 The key here is no commercial use. Commercial licensing options are available. Please contact us if that is of interest.
+
+In plain English...
+
+You can use the software for free, as long as you don't make money from it. You can share it with others, and you can adapt it to suit your needs. You must credit the original author, and you must not make money from it.
+
+It is dual licensed, so any code that you submit to the project may be included in commercially licensed versions of the project.
 
 ===
 Canonical URL: https://creativecommons.org/licenses/by-nc/4.0/
