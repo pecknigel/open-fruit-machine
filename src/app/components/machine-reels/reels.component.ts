@@ -1,14 +1,18 @@
 import {Component, OnInit, AfterViewInit} from '@angular/core';
 
 type ReelItem = 'orange' | 'grapes' | 'lemon' | 'cherries';
-type ReelItemPosition = number;
-type ReelItemData = [ReelItem, ReelItemPosition];
+type ReelItemData = {
+  item: ReelItem,
+  position: number,
+  status: 'spinning' | 'stopped'
+};
 // [reel][reel items][reel item data]
 type Reels = ReelItemData[][];
 
 // TODO: Make the reels stop on a proper position
 // TODO: Spin the reels based on time rather than when the interval occurs
 // TODO: Add more items to the reels
+// TODO: Change reel item positions to be based on the center of the box
 
 @Component({
   selector: 'app-machine-reels',
@@ -37,7 +41,11 @@ export class ReelsComponent implements OnInit, AfterViewInit {
     for (const reel of this.reelPositions) {
       let pos = Math.floor(Math.random() * 4);
       for (let i = 0; i < this.reelItemCount; i++) {
-        reel.push([this.reelItems[i], this.oneThird * pos]);
+        reel.push({
+          item: this.reelItems[i],
+          position: this.oneThird * pos,
+          status: 'spinning'
+        });
         pos = (pos + 1) % 4;
       }
     }
@@ -76,8 +84,8 @@ export class ReelsComponent implements OnInit, AfterViewInit {
           this.clearSpinInterval();
           return;
         }
-        item[1] += this.spinInterval;
-        if (item[1] > 100) item[1] = this.basePos;
+        item.position += this.spinInterval % 100;
+        if (item.position > 100) item.position = this.basePos;
       }
     }
   }
