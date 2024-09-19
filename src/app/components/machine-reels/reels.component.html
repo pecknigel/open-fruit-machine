@@ -1,7 +1,7 @@
 <div class="machine-reels-container">
   <div class="machine-reels">
     <div class="machine-reel" *ngFor="let reel of reelPositions; let i = index">
-      <app-machine-reel-item *ngFor="let item of reel" [type]="item.item" [style.top]="item.position + '%'"></app-machine-reel-item>
+      <app-machine-reel-item *ngFor="let item of reel.items" [type]="item.item" [style.top]="item.position + '%'"></app-machine-reel-item>
     </div>
   </div>
 </div>
@@ -9,13 +9,35 @@
 <div id="debug" [class.shown]="showDebug">
   <button (click)="showDebug = !showDebug">🐞</button>
   <div class="debug-content">
+    <h2>Reels</h2>
+    <table>
+      <tbody>
+      <tr>
+        <th>Spinning</th>
+        <td>{{ !!reelsSpinning }}</td>
+      </tr>
+      </tbody>
+    </table>
     <div *ngFor="let reel of reelPositions; let i = index">
       <h2>Reel {{i + 1}}</h2>
       <table>
         <tbody>
-          <tr class="reel-items" *ngFor="let item of reel">
-            <th>{{item[0]}}</th>
-            <td>{{item[1] | number:'1.000'}}</td>
+          <tr>
+            <th>Status</th>
+            <td>{{ reel.status }}</td>
+          </tr>
+          <tr>
+            <th>Travel</th>
+            <td>{{ reel.travelSinceStop ?? '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>Items</h3>
+      <table>
+        <tbody>
+          <tr class="reel-items" *ngFor="let item of reel.items">
+            <th>{{item.item}}</th>
+            <td>{{item.position | number:'1.000'}}</td>
           </tr>
       </table>
     </div>

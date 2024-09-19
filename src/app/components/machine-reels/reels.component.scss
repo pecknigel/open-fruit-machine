@@ -13,8 +13,9 @@
   position: absolute;
   top: -56px;
   left: calc(100% + 30px);
-  width: 150px;
+  width: 200px;
   text-align: left;
+  font-family: monospace;
   button {
     float: right;
     font-size: 22px;
@@ -25,6 +26,9 @@
     width: calc(100% - 6px);
     margin: 0 3px;
   }
+  th {
+    width: 75px;
+  }
   &.shown {
     button {
       transform: rotate(180deg);
@@ -34,6 +38,8 @@
   .debug-content {
     clear: both;
     display: none;
+    background: white;
+    padding-top: 1px;
   }
   &.shown {
     .debug-content {
@@ -48,10 +54,14 @@
     background: #cccccc;
     border: 1px outset orangered;
   }
+  h3 {
+    padding: 3px;
+    margin: 0 3px;
+    font-size: 12px;
+    color: #912600;
+  }
   .reel-items {
     padding: 3px;
-    background: white;
-    font-family: monospace;
   }
 }
 
