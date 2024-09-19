@@ -13,11 +13,19 @@ menu {
   bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  $active-color: orange;
+  $active-bg: mediumvioletred;
+  $inactive-color: #d18ed1;
+  $inactive-bg: #c175c1;
+  $pending-color: #aa6e00;
+  $pending-bg: #a61573;
   button {
     font-size: 36px;
-    color: orange;
-    background: mediumvioletred;
-    border: 10px outset violet;
+    color: $active-color;
+    background: $active-bg;
+    border: 10px solid violet;
     text-transform: uppercase;
     width: 200px;
     height: 80px;
@@ -25,6 +33,39 @@ menu {
     letter-spacing: 2px;
     :active {
       border-style: inset;
+    }
+    &.start {
+      border-style: outset;
+      color: $active-color;
+      background: $active-bg;
+    }
+    &.stop {
+      border-style: solid;
+      color: $inactive-color;
+      background: $inactive-bg;
+    }
+  }
+  &.spinning {
+    button {
+      &.start {
+        border-style: solid;
+        color: $inactive-color;
+        background: $inactive-bg;
+      }
+      &.stop {
+        border-style: outset;
+        color: $active-color;
+        background: $active-bg;
+      }
+    }
+    &.stopping {
+      button {
+        &.stop {
+          border-style: inset;
+          color: $pending-color;
+          background: $pending-bg;
+        }
+      }
     }
   }
 }
