@@ -80,11 +80,8 @@ export class ReelsComponent implements OnInit {
       // Position the first item at the starting position
       let pos = reel.startPos!;
       // Set the initial reel items
-      // TODO Randomise the starting position of the item choice from the reel items,
-      //  especially once reels have more items than are displayed, after that perhaps
-      //  stop randomising the start position of the reel (since it won't work with both
-      //  anyway) - do all that by filling a queue from the reel items, starting from a random position,
-      //  could just be a pointer index but having an actual queue seems more fun, if a little redundant
+      // TODO Randomise the start point by choosing a random start index from the reelItems
+      //  then tracking that to manage the reel item queue, throw error if length less than 4
       for (let j = 0; j < this.reelItemCount; j++) {
         // Initialise the item
         reel.items.push({
@@ -122,6 +119,8 @@ export class ReelsComponent implements OnInit {
           continue;
         }
       }
+      // Track when all stopped
+      allStopped = false;
       // Process each item on the reel
       for (const item of reel.items) {
         // Increment the position of the item
@@ -130,8 +129,6 @@ export class ReelsComponent implements OnInit {
         // TODO Drop the item to a queue and pick up the next item
         if (item.position > 100) item.position = (item.position % 100) + this.basePos;
       }
-      // Track when all stopped
-      allStopped = false;
     }
     // Clear interval if all reels have stopped
     if (allStopped) {
