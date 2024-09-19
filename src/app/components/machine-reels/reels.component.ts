@@ -1,7 +1,8 @@
-import {Component, OnInit, AfterViewInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 type Reel = {
   status: 'spinning' | 'stopped',
+  startPos?: number;
   travelSinceStop?: number,
   items: ReelItemData[]
 };
@@ -24,7 +25,7 @@ type Reels = Reel[];
   templateUrl: './reels.component.html',
   styleUrl: './reels.component.scss'
 })
-export class ReelsComponent implements OnInit, AfterViewInit {
+export class ReelsComponent implements OnInit {
   protected showDebug: boolean = true;
 
   protected reelsSpinning?: any;
@@ -37,27 +38,16 @@ export class ReelsComponent implements OnInit, AfterViewInit {
 
   private reelCount = 3;
   private reelItemCount = 4;
-  private reelItems: ReelItem[] = ['orange', 'grapes', 'lemon', 'cherries'];
+  private reelItems: ReelItem[][] = [
+    ['orange', 'grapes', 'lemon', 'cherries'],
+    ['lemon', 'orange', 'cherries', 'grapes'],
+    ['cherries', 'lemon', 'grapes', 'orange']
+  ];
 
-  protected reelPositions: Reels = [];
+  protected reels: Reels = [];
 
-  private initialiseReels() {
-    for (let i = 0; i < this.reelCount; i++) {
-      this.reelPositions.push({
-        status: 'stopped',
-        items: []
-      });
-    }
-    for (const reel of this.reelPositions) {
-      let pos = Math.floor(Math.random() * 4);
-      for (let i = 0; i < this.reelItemCount; i++) {
-        reel.items.push({
-          item: this.reelItems[i],
-          position: this.oneThird * pos
-        });
-        pos = (pos + 1) % 4;
-      }
-    }
+  ngOnInit() {
+    this.initialiseReels();
   }
 
   public get isReelsSpinning(): boolean { return !!this.reelsSpinning }
@@ -67,8 +57,8 @@ export class ReelsComponent implements OnInit, AfterViewInit {
   public startSpin() {
     if (this.reelsSpinning) return;
     if (this.stopSpinning) return;
-    this.reelsSpinning = setInterval(this.cycleReels.bind(this), 10);
-    for(const reel of this.reelPositions) {
+    this.startReelCycle();
+    for(const reel of this.reels) {
       reel.status = 'spinning';
       reel.travelSinceStop = undefined;
     }
@@ -79,51 +69,79 @@ export class ReelsComponent implements OnInit, AfterViewInit {
     this.stopSpinning = true;
   }
 
-  public clearSpinInterval() {
-    this.stopSpinning = false;
-    if (this.reelsSpinning) clearInterval(this.reelsSpinning);
-    this.reelsSpinning = undefined;
+  private initialiseReels() {
+    for (let i = 0; i < this.reelCount; i++) {
+      const reel: Reel = {
+        status: 'stopped',
+        items: []
+      }
+      // Randomise the starting position of the reel
+      reel.startPos = Math.floor(Math.random() * 4);
+      // Position the first item at the starting position
+      let pos = reel.startPos!;
+      // Set the initial reel items
+      // TODO Randomise the starting position of the item choice from the reel items,
+      //  especially once reels have more items than are displayed, after that perhaps
+      //  stop randomising the start position of the reel (since it won't work with both
+      //  anyway) - do all that by filling a queue from the reel items, starting from a random position,
+      //  could just be a pointer index but having an actual queue seems more fun, if a little redundant
+      for (let j = 0; j < this.reelItemCount; j++) {
+        // Initialise the item
+        reel.items.push({
+          item: this.reelItems[i][j],
+          position: this.oneThird * pos
+        });
+        pos = (pos + 1) % 4;
+      }
+      this.reels.push(reel);
+    }
+  }
+
+  private startReelCycle() {
+    this.reelsSpinning = setInterval(this.cycleReels.bind(this), 10);
   }
 
   private cycleReels() {
     let allStopped = true;
-    for (const reel of this.reelPositions) {
+    for (const reel of this.reels) {
       // Handle stopping
       if (this.stopSpinning) {
         // Ignore this reel if it's already stopped
         if (reel.status === 'stopped') continue;
         // If the reel hasn't started stopping, save the position it started stopping
-        if (typeof reel.travelSinceStop !== 'number') {
-          reel.travelSinceStop = 0;
-        } else {
-          reel.travelSinceStop += this.spinInterval;
-        }
-      }
-      for (const item of reel.items) {
+        reel.travelSinceStop ??= 0;
+        reel.travelSinceStop += this.spinInterval;
         if (
-          reel.travelSinceStop
-          && reel.travelSinceStop > this.minTravelOnStop
-          && this.stopSpinning
-          && item.position % this.oneThird > -1
-          && item.position % this.oneThird < 1
+          reel.travelSinceStop > this.minTravelOnStop
+          // Is at a stopping point
+          // TODO Make the stopping point be exact and adjust all items accordingly
+          && reel.items[0].position % this.oneThird > -1
+          && reel.items[0].position % this.oneThird < 1
         ) {
           reel.status = 'stopped';
           continue;
         }
+      }
+      // Process each item on the reel
+      for (const item of reel.items) {
+        // Increment the position of the item
         item.position += this.spinInterval;
+        // Cycle the item back to the start if it reached the end
+        // TODO Drop the item to a queue and pick up the next item
         if (item.position > 100) item.position = (item.position % 100) + this.basePos;
       }
-      if (reel.status !== 'stopped') allStopped = false;
+      // Track when all stopped
+      allStopped = false;
     }
+    // Clear interval if all reels have stopped
     if (allStopped) {
-      this.clearSpinInterval();
+      this.endReelCycle();
     }
   }
 
-  ngOnInit() {
-    this.initialiseReels();
-  }
-
-  ngAfterViewInit() {
+  private endReelCycle() {
+    this.stopSpinning = false;
+    if (this.reelsSpinning) clearInterval(this.reelsSpinning);
+    this.reelsSpinning = undefined;
   }
 }
