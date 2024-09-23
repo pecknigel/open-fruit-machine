@@ -21,6 +21,28 @@ menu {
   $inactive-bg: #c175c1;
   $pending-color: #aa6e00;
   $pending-bg: #a61573;
+
+  @mixin pressable-button {
+    border-style: outset;
+    color: $active-color;
+    background: $active-bg;
+  }
+
+  @mixin inactive-button {
+    border-style: solid;
+    color: $inactive-color;
+    background: $inactive-bg;
+  }
+
+  @keyframes button-press {
+    from {
+      @include pressable-button;
+    }
+    to {
+      @include inactive-button;
+    }
+  }
+
   button {
     font-size: 36px;
     color: $active-color;
@@ -31,39 +53,37 @@ menu {
     height: 80px;
     font-weight: bold;
     letter-spacing: 2px;
-    :active {
-      border-style: inset;
+    &:active {
+      border-style: inset !important;
     }
     &.start {
-      border-style: outset;
-      color: $active-color;
-      background: $active-bg;
+      @include pressable-button;
     }
     &.stop {
-      border-style: solid;
-      color: $inactive-color;
-      background: $inactive-bg;
+      @include inactive-button;
     }
   }
   &.spinning {
     button {
       &.start {
-        border-style: solid;
-        color: $inactive-color;
-        background: $inactive-bg;
+        animation: button-press 0s;
+        animation-delay: .45s;
+        animation-fill-mode: forwards;
+        @include pressable-button;
+        border-style: inset;
       }
       &.stop {
-        border-style: outset;
-        color: $active-color;
-        background: $active-bg;
+        @include pressable-button;
       }
     }
     &.stopping {
       button {
         &.stop {
+          animation: button-press 0s;
+          animation-delay: .45s;
+          animation-fill-mode: forwards;
+          @include pressable-button;
           border-style: inset;
-          color: $pending-color;
-          background: $pending-bg;
         }
       }
     }
