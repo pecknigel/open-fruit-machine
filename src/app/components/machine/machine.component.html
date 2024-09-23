@@ -2,6 +2,14 @@
   <app-machine-reels #reelsComponent></app-machine-reels>
 </main>
 <menu [class.spinning]="reelsComponent.isReelsSpinning" [class.stopping]="reelsComponent.isReelsStopping">
-  <button (click)="reelsComponent.startSpin()" class="start">Start</button>
-  <button (click)="reelsComponent.stopSpin()" class="stop">Stop</button>
+  <button
+    class="start"
+    (click)="reelsComponent.startSpin()"
+    [disabled]="reelsComponent.isReelsSpinning"
+  >Start</button>
+  <button
+    class="stop"
+    (click)="reelsComponent.stopSpin()"
+    [disabled]="!reelsComponent.isReelsSpinning"
+  >Stop</button>
 </menu>
