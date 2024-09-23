@@ -22,25 +22,29 @@ menu {
   $pending-color: #aa6e00;
   $pending-bg: #a61573;
 
-  @mixin pressable-button {
+  @mixin pressable-button($for-animation: 0) {
     border-style: outset;
     color: $active-color;
     background: $active-bg;
+    @if $for-animation != 1 {
+      &:active {
+        border-style: inset;
+      }
+    }
+  }
+
+  @mixin just-pressed-button {
+    animation: button-press 0s;
+    animation-delay: .45s;
+    animation-fill-mode: forwards;
+    @include pressable-button;
+    border-style: inset;
   }
 
   @mixin inactive-button {
     border-style: solid;
     color: $inactive-color;
     background: $inactive-bg;
-  }
-
-  @keyframes button-press {
-    from {
-      @include pressable-button;
-    }
-    to {
-      @include inactive-button;
-    }
   }
 
   button {
@@ -53,9 +57,6 @@ menu {
     height: 80px;
     font-weight: bold;
     letter-spacing: 2px;
-    &:active:not([disabled]) {
-      border-style: inset !important;
-    }
     &.start {
       @include pressable-button;
     }
@@ -66,11 +67,7 @@ menu {
   &.spinning {
     button {
       &.start {
-        animation: button-press 0s;
-        animation-delay: .45s;
-        animation-fill-mode: forwards;
-        @include pressable-button;
-        border-style: inset;
+        @include just-pressed-button;
       }
       &.stop {
         @include pressable-button;
@@ -79,13 +76,18 @@ menu {
     &.stopping {
       button {
         &.stop {
-          animation: button-press 0s;
-          animation-delay: .45s;
-          animation-fill-mode: forwards;
-          @include pressable-button;
-          border-style: inset;
+          @include just-pressed-button;
         }
       }
+    }
+  }
+
+  @keyframes button-press {
+    from {
+      @include pressable-button(1);
+    }
+    to {
+      @include inactive-button;
     }
   }
 }
