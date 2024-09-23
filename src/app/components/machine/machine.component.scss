@@ -35,7 +35,7 @@ menu {
 
   @mixin just-pressed-button {
     animation: button-press 0s;
-    animation-delay: .45s;
+    animation-delay: .35s;
     animation-fill-mode: forwards;
     @include pressable-button;
     border-style: inset;
