@@ -9,12 +9,12 @@ type Reel = {
 type ReelItem = 'orange' | 'grapes' | 'lemon' | 'cherries';
 type ReelItemData = {
   item: ReelItem,
-  position: number
+  position: number,
+  startPos?: number
 };
 // [reel][reel items][reel item data]
 type Reels = Reel[];
 
-// TODO: Spin the reels based on time rather than when the interval occurs
 // TODO: Add more items to the reels
 // TODO: Change reel item positions to be based on the center of the box
 // TODO: Fix stopping the reels from breaking item position sometimes (due to passing 100 mark most likely)
@@ -28,17 +28,19 @@ type Reels = Reel[];
 export class ReelsComponent implements OnInit {
   protected showDebug: boolean = true;
 
-  protected reelsSpinning?: any;
+  protected spinInterval?: any;
+  protected readonly spinIntervalTime: number = 10;
+
+  protected spinStartTime?: number;
+
   protected stopSpinning: boolean = false;
-  protected minTravelOnStop: number = 150;
+  protected minTravelOnStop: number = 15000;
 
-  private oneThird = 33.333;
-  private basePos = -this.oneThird;
-  private spinInterval = 2;
+  private readonly spinMovementPerSecond = 100;
 
-  private reelCount = 3;
-  private reelItemCount = 4;
-  private reelItems: ReelItem[][] = [
+  private readonly reelCount = 3;
+  private readonly reelItemCount = 4;
+  private readonly reelItems: ReelItem[][] = [
     ['orange', 'grapes', 'lemon', 'cherries'],
     ['lemon', 'orange', 'cherries', 'grapes'],
     ['cherries', 'lemon', 'grapes', 'orange']
@@ -50,12 +52,12 @@ export class ReelsComponent implements OnInit {
     this.initialiseReels();
   }
 
-  public get isReelsSpinning(): boolean { return !!this.reelsSpinning }
+  public get isReelsSpinning(): boolean { return !!this.spinInterval }
 
   public get isReelsStopping(): boolean { return this.stopSpinning }
 
   public startSpin() {
-    if (this.reelsSpinning) return;
+    if (this.spinInterval) return;
     if (this.stopSpinning) return;
     this.startReelCycle();
     for(const reel of this.reels) {
@@ -65,7 +67,7 @@ export class ReelsComponent implements OnInit {
   }
 
   public stopSpin() {
-    if (!this.reelsSpinning) return;
+    if (!this.spinInterval) return;
     this.stopSpinning = true;
   }
 
@@ -86,7 +88,8 @@ export class ReelsComponent implements OnInit {
         // Initialise the item
         reel.items.push({
           item: this.reelItems[i][j],
-          position: this.oneThird * pos
+          // TODO Review discrepancy between start position and stop position
+          position: 25 * pos
         });
         pos = (pos + 1) % 4;
       }
@@ -95,11 +98,19 @@ export class ReelsComponent implements OnInit {
   }
 
   private startReelCycle() {
-    this.reelsSpinning = setInterval(this.cycleReels.bind(this), 10);
+    this.spinStartTime = Date.now();
+    // Record the starting position of each item
+    for (const reel of this.reels) {
+      for (const item of reel.items) {
+        item.startPos = item.position;
+      }
+    }
+    this.spinInterval = setInterval(this.cycleReels.bind(this), this.spinIntervalTime);
   }
 
   private cycleReels() {
     let allStopped = true;
+    const baseSpinMovement = (Date.now() - this.spinStartTime!) * (this.spinMovementPerSecond / 1000);
     for (const reel of this.reels) {
       // Handle stopping
       if (this.stopSpinning) {
@@ -107,13 +118,14 @@ export class ReelsComponent implements OnInit {
         if (reel.status === 'stopped') continue;
         // If the reel hasn't started stopping, save the position it started stopping
         reel.travelSinceStop ??= 0;
-        reel.travelSinceStop += this.spinInterval;
+        reel.travelSinceStop += this.spinMovementPerSecond;
         if (
+          // TODO Get this working with the new setup, perhaps base it on time rather than movement
           reel.travelSinceStop > this.minTravelOnStop
           // Is at a stopping point
           // TODO Make the stopping point be exact and adjust all items accordingly
-          && reel.items[0].position % this.oneThird > -1
-          && reel.items[0].position % this.oneThird < 1
+          && reel.items[0].position % 25 > -1
+          && reel.items[0].position % 25 < 1
         ) {
           reel.status = 'stopped';
           continue;
@@ -123,11 +135,10 @@ export class ReelsComponent implements OnInit {
       allStopped = false;
       // Process each item on the reel
       for (const item of reel.items) {
-        // Increment the position of the item
-        item.position += this.spinInterval;
+        // Set the position of the item
         // Cycle the item back to the start if it reached the end
-        // TODO Drop the item to a queue and pick up the next item
-        if (item.position > 100) item.position = (item.position % 100) + this.basePos;
+        // TODO Drop the item type to a queue and pick up the next item
+        item.position = (item.startPos! + baseSpinMovement) % 100;
       }
     }
     // Clear interval if all reels have stopped
@@ -138,7 +149,8 @@ export class ReelsComponent implements OnInit {
 
   private endReelCycle() {
     this.stopSpinning = false;
-    if (this.reelsSpinning) clearInterval(this.reelsSpinning);
-    this.reelsSpinning = undefined;
+    if (this.spinInterval) clearInterval(this.spinInterval);
+    this.spinInterval = undefined;
+    this.spinStartTime = undefined;
   }
 }
