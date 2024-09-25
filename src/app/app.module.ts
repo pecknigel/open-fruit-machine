@@ -7,6 +7,8 @@ import { MachineComponent } from './components/machine/machine.component';
 import { ReelsComponent } from './components/machine-reels/reels.component';
 import { ReelItemComponent } from './components/machine-reel-item/reel-item.component';
 
+import { OrderModule } from 'ngx-order-pipe';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -16,7 +18,8 @@ import { ReelItemComponent } from './components/machine-reel-item/reel-item.comp
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    OrderModule
   ],
   providers: [],
   bootstrap: [AppComponent]

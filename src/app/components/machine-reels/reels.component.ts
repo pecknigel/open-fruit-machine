@@ -10,6 +10,7 @@ type ReelItem = 'orange' | 'grapes' | 'lemon' | 'cherries';
 type ReelItemData = {
   item: ReelItem,
   position: number,
+  lastPosition?: number,
   startPos?: number
 };
 // [reel][reel items][reel item data]
@@ -17,7 +18,6 @@ type Reels = Reel[];
 
 // TODO: Add more items to the reels
 // TODO: Change reel item positions to be based on the center of the box
-// TODO: Fix stopping the reels from breaking item position sometimes (due to passing 100 mark most likely)
 // TODO: Slow reels down when stopping
 
 @Component({
@@ -112,10 +112,20 @@ export class ReelsComponent implements OnInit {
     let allStopped = true;
     const baseSpinMovement = (Date.now() - this.spinStartTime!) * (this.spinMovementPerSecond / 1000);
     for (const reel of this.reels) {
+      // Ignore this reel if it's already stopped
+      if (reel.status === 'stopped') continue;
+      // Process each item on the reel
+      for (const item of reel.items) {
+        // Set the position of the item
+        // Cycle the item back to the start if it reached the end
+        // TODO Drop the item type to a queue and pick up the next item
+        item.lastPosition = item.position;
+        item.position = (item.startPos! + baseSpinMovement) % 100;
+      }
+      // Track when all stopped
+      allStopped = false;
       // Handle stopping
       if (this.stopSpinning) {
-        // Ignore this reel if it's already stopped
-        if (reel.status === 'stopped') continue;
         // If the reel hasn't started stopping, save the position it started stopping
         reel.travelSinceStop ??= 0;
         reel.travelSinceStop += this.spinMovementPerSecond;
@@ -124,21 +134,23 @@ export class ReelsComponent implements OnInit {
           reel.travelSinceStop > this.minTravelOnStop
           // Is at a stopping point
           // TODO Make the stopping point be exact and adjust all items accordingly
-          && reel.items[0].position % 25 > -1
-          && reel.items[0].position % 25 < 1
+          && reel.items[0].position % 25 >= 0
+          && reel.items[0].position % 25 < 5
+          && reel.items[0].lastPosition! % 25 > 20
+          && reel.items[0].lastPosition! % 25 < 25
         ) {
           reel.status = 'stopped';
-          continue;
+          // Process each item on the reel
+          for (const item of reel.items) {
+            // Set the position of the item
+            // Cycle the item back to the start if it reached the end
+            // TODO Drop the item type to a queue and pick up the next item
+            item.lastPosition = undefined;
+            item.position = item.position - item.position % 25;
+          }
+          console.log('Stopping reel');
+          console.table(reel.items);
         }
-      }
-      // Track when all stopped
-      allStopped = false;
-      // Process each item on the reel
-      for (const item of reel.items) {
-        // Set the position of the item
-        // Cycle the item back to the start if it reached the end
-        // TODO Drop the item type to a queue and pick up the next item
-        item.position = (item.startPos! + baseSpinMovement) % 100;
       }
     }
     // Clear interval if all reels have stopped

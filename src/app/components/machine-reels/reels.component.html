@@ -39,7 +39,7 @@
       <h3>Items</h3>
       <table>
         <tbody>
-          <tr class="reel-items" *ngFor="let item of reel.items">
+          <tr class="reel-items" *ngFor="let item of reel.items | orderBy: 'position'">
             <th>{{item.item}}</th>
             <td>{{item.position | number:'1.000'}}</td>
           </tr>
