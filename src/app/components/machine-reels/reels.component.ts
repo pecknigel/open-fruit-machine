@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 
 type Reel = {
   status: 'spinning' | 'stopped',
-  startPos?: number;
   travelSinceStop?: number,
   items: ReelItemData[]
 };
@@ -18,7 +17,8 @@ type Reels = Reel[];
 // TODO: Get the reel item stopping point aligned to the exact center
 // TODO: Add more items to the reels
 // TODO: Change reel item positions to be based on the center of the box
-// TODO: Slow reels down when stopping
+// TODO: Slow reels down before stopping
+// TODO: Randomise the length of each spin
 
 @Component({
   selector: 'app-machine-reels',
@@ -38,15 +38,24 @@ export class ReelsComponent implements OnInit {
 
   private readonly spinMovementPerSecond = 100;
 
-  private readonly reelCount = 3;
-  private readonly reelItemCount = 4;
+  private reelItemPointers = [0, 0, 0];
+
   private readonly reelItems: ReelItem[][] = [
     ['orange', 'grapes', 'lemon', 'cherries'],
     ['lemon', 'orange', 'cherries', 'grapes'],
     ['cherries', 'lemon', 'grapes', 'orange']
   ];
 
+  private getNextReelItem(reelIndex: number) {
+    const nextItem = this.reelItems[reelIndex][this.reelItemPointers[reelIndex]];
+    this.reelItemPointers[reelIndex] = (this.reelItemPointers[reelIndex] + 1) % 4;
+    return nextItem;
+  }
+
   protected reels: Reels = [];
+
+  private readonly reelCount = 3;
+  private readonly reelItemCount = 4;
 
   ngOnInit() {
     this.initialiseReels();
@@ -58,26 +67,17 @@ export class ReelsComponent implements OnInit {
 
   private initialiseReels() {
     for (let i = 0; i < this.reelCount; i++) {
-      const reel: Reel = {
-        status: 'stopped',
-        items: []
-      }
-      // Randomise the starting position of the reel
-      reel.startPos = Math.floor(Math.random() * 4);
-      // Position the first item at the starting position
-      let pos = reel.startPos!;
-      // Set the initial reel items
-      // TODO Randomise the start point by choosing a random start index from the reelItems
-      //  then tracking that to manage the reel item queue, throw error if length less than 4
+      this.reelItemPointers[i] = Math.floor(Math.random() * 4);
+    }
+    for (let i = 0; i < this.reelCount; i++) {
+      const items = [];
       for (let j = 0; j < this.reelItemCount; j++) {
-        // Initialise the item
-        reel.items.push({
-          item: this.reelItems[i][j],
-          position: 25 * pos
+        items.push({
+          item: this.getNextReelItem(i),
+          position: j * 25
         });
-        pos = (pos + 1) % 4;
       }
-      this.reels.push(reel);
+      this.reels.push({ status: 'stopped', items });
     }
   }
 
@@ -111,12 +111,12 @@ export class ReelsComponent implements OnInit {
   private cycleReels() {
     // Define the base movement of the reel items
     const baseSpinMovement = (Date.now() - this.spinStartTime!) * (this.spinMovementPerSecond / 1000);
-    for (const reel of this.reels.filter(r => r.status !== 'stopped')) {
+    for (const [index, reel] of this.reels.entries()) {
+      if (reel.status === 'stopped') continue;
       for (const item of reel.items) {
         item.lastPosition = item.position;
-        // Cycle the item back to the start if it reached the end
-        // TODO Drop the item type to a queue and pick up the next item
         item.position = (item.startPos! + baseSpinMovement) % 100;
+        item.item = this.getNextReelItem(index);
       }
       if (!this.stopSpinning) continue;
       reel.travelSinceStop ??= 0;
@@ -126,7 +126,6 @@ export class ReelsComponent implements OnInit {
         // Has travelled far enough
         reel.travelSinceStop > this.minTravelOnStop
         // Just passed a stopping point
-        // TODO Make the stopping point be exact and adjust all items accordingly
         && reel.items[0].position % 25 >= 0
         && reel.items[0].position % 25 < 5
         && reel.items[0].lastPosition! % 25 > 20
