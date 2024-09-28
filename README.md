@@ -4,13 +4,19 @@
 
 ## Licensing
 
-This project is dual licensed. See [LICENSE.txt](LICENSE.txt) for more information.
+This project is dual licensed. See [LICENSE.txt](LICENSE.txt).
 
 ## Contributions
 
-Contributions to the project are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
+Contributions to the project are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Development
+## Clone the Repo
+
+```
+git clone https://github.com/pecknigel/open-fruit-machine.git
+```
+
+## Run the Dev Server
 
 Run `npm start` to start the development server. Navigate to http://localhost:4200/. The application will automatically reload if you change any of the source files.
 
