@@ -8,7 +8,7 @@ This project is dual licensed. See [LICENSE.txt](LICENSE.txt).
 
 ## Contributions
 
-Contributions to the project are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
+Contributions are welcome. ~~See [CONTRIBUTING.md](CONTRIBUTING.md)~~ (currently a stub).
 
 ## Clone the Repo
 
