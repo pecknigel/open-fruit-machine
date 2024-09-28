@@ -2,10 +2,6 @@
 
 ![Open Fruit Machine Runtime](runtime.png)
 
-## Licensing
-
-This project is dual licensed. See [LICENSE.txt](LICENSE.txt).
-
 ## Contributions
 
 Contributions are welcome. ~~See [CONTRIBUTING.md](CONTRIBUTING.md)~~ (currently a stub).
@@ -31,6 +27,10 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ## Build
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+
+## Licensing
+
+This project is dual licensed. See [LICENSE.txt](LICENSE.txt).
 
 ----
 
