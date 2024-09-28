@@ -1,5 +1,7 @@
 # Open Fruit Machine
 
+![Open Fruit Machine Runtime](runtime.png)
+
 ## Licensing
 
 This project is dual licensed. See [LICENSE.txt](LICENSE.txt) for more information.
