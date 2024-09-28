@@ -16,7 +16,7 @@ type Reels = Reel[];
 
 // TODO: Get the reel item stopping point aligned to the exact center
 // TODO: Add more items to the reels
-// TODO: Change reel item positions to be based on the center of the box
+// TODO: Change reel item positions to be based on the center of the reel item box being at the point
 // TODO: Slow reels down before stopping
 // TODO: Randomise the length of each spin
 
@@ -38,18 +38,18 @@ export class ReelsComponent implements OnInit {
 
   private readonly spinMovementPerSecond = 100;
 
-  private reelItemPointers = [0, 0, 0];
+  private reelItemPointers: number[] = [0, 0, 0];
 
   private readonly reelItems: ReelItem[][] = [
-    ['orange', 'grapes', 'lemon', 'cherries'],
-    ['lemon', 'orange', 'cherries', 'grapes'],
-    ['cherries', 'lemon', 'grapes', 'orange']
+    ['orange', 'grapes', 'lemon', 'cherries', 'cherries'],
+    ['lemon', 'cherries', 'orange', 'cherries', 'grapes'],
+    ['cherries', 'lemon', 'grapes', 'cherries', 'orange']
   ];
 
-  private getNextReelItem(reelIndex: number) {
-    const nextItem = this.reelItems[reelIndex][this.reelItemPointers[reelIndex]];
-    this.reelItemPointers[reelIndex] = (this.reelItemPointers[reelIndex] + 1) % 4;
-    return nextItem;
+  private getNextReelItem(reelIndex: number): ReelItem {
+    const item = this.reelItems[reelIndex][this.reelItemPointers[reelIndex]];
+    this.reelItemPointers[reelIndex] = (this.reelItemPointers[reelIndex] + 1) % this.reelItemCount;
+    return item;
   }
 
   protected reels: Reels = [];
