@@ -20,11 +20,11 @@ git clone https://github.com/pecknigel/open-fruit-machine.git
 
 Run `npm start` to start the development server. Navigate to http://localhost:4200/. The application will automatically reload if you change any of the source files.
 
-### Scaffolding
+## Scaffolding
 
 Run `ng generate component components/component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-### More Help with Angular CLI
+## More Help with Angular CLI
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
 
