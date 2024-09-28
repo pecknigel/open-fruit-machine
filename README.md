@@ -34,4 +34,4 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 ----
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.3.
+The original scaffolding for this project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.3 - 09/09/2024 14:06 CST.
