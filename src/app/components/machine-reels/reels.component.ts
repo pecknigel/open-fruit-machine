@@ -14,9 +14,7 @@ type ReelItemData = {
 };
 type Reels = Reel[];
 
-// TODO: Get the reel item stopping point aligned to the exact center
 // TODO: Add more items to the reels
-// TODO: Change reel item positions to be based on the center of the reel item box being at the point
 // TODO: Slow reels down before stopping
 // TODO: Randomise the length of each spin
 

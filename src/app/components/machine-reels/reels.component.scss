@@ -94,20 +94,26 @@ $border-color: rgb(163, 147, 147);
   background: white;
   border-left: 3px solid black;
   border-right: 3px solid black;
-  &:nth-child(1) {
+  &.reel-1 {
     left: 0;
   }
-  &:nth-child(2) {
+  &.reel-2 {
     left: calc((100% / 3 + 10px) * 1);
   }
-  &:nth-child(3) {
+  &.reel-3 {
     left: calc((100% / 3 + 10px) * 2);
+  }
+  &.reel-4 {
+    left: calc((100% / 3 + 10px) * 3);
+  }
+  &.reel-5 {
+    left: calc((100% / 3 + 10px) * 4);
   }
   > app-machine-reel-item {
     position: absolute;
     left: 5%;
     width: 90%;
     height: 20%;
-    transform: translateY(5%);
+    transform: translateY(-50%);
   }
 }

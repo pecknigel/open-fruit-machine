@@ -1,7 +1,7 @@
 <div class="machine-reels-container">
   <div class="machine-reels">
-    <div class="machine-reel" *ngFor="let reel of reels; let i = index">
-      <app-machine-reel-item *ngFor="let item of reel.items" [type]="item.item" [style.top]="item.position + '%'"></app-machine-reel-item>
+    <div class="machine-reel" *ngFor="let reel of reels; let i = index" [ngClass]="'reel-' + (i + 1)">
+      <app-machine-reel-item *ngFor="let item of reel.items" [type]="item.item" [style.top]="item.position + 12.5 + '%'"></app-machine-reel-item>
     </div>
   </div>
 </div>
