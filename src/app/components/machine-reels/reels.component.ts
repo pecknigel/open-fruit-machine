@@ -3,6 +3,7 @@ import {Component, OnInit} from '@angular/core';
 type Reel = {
   status: 'spinning' | 'stopped',
   travelSinceStop?: number,
+  minTravelOnStop?: number,
   items: ReelItemData[]
 };
 type ReelItem = 'orange' | 'grapes' | 'lemon' | 'cherries';
@@ -17,6 +18,7 @@ type Reels = Reel[];
 // TODO: Add more items to the reels
 // TODO: Slow reels down before stopping
 // TODO: Randomise the length of each spin
+// TODO: Update random min travel generation so that the number will tend to be larger or smaller based on a curve
 
 @Component({
   selector: 'app-machine-reels',
@@ -32,7 +34,7 @@ export class ReelsComponent implements OnInit {
   protected spinStartTime?: number;
 
   protected stopSpinning: boolean = false;
-  protected minTravelOnStop: number = 15000;
+  protected minTravelOnStop: [number, number] = [10000, 40000];
 
   private readonly spinMovementPerSecond = 100;
 
@@ -95,6 +97,7 @@ export class ReelsComponent implements OnInit {
     for(const reel of this.reels) {
       reel.status = 'spinning';
       reel.travelSinceStop = undefined;
+      reel.minTravelOnStop = this.generateRandomMinTravelOnStop();
     }
     this.spinStartTime = Date.now();
     // Record the starting position of each item
@@ -104,6 +107,10 @@ export class ReelsComponent implements OnInit {
       }
     }
     this.spinInterval = setInterval(this.cycleReels.bind(this), this.spinIntervalTime);
+  }
+
+  private generateRandomMinTravelOnStop() {
+    return Math.floor(Math.random() * (this.minTravelOnStop[1] - this.minTravelOnStop[0] + 1) + this.minTravelOnStop[0]);
   }
 
   private cycleReels() {
@@ -122,7 +129,7 @@ export class ReelsComponent implements OnInit {
       if (
         // TODO Get this working with the new setup, perhaps base it on time rather than movement
         // Has travelled far enough
-        reel.travelSinceStop > this.minTravelOnStop
+        reel.travelSinceStop > reel.minTravelOnStop!
         // Just passed a stopping point
         && reel.items[0].position % 25 >= 0
         && reel.items[0].position % 25 < 5
@@ -131,6 +138,7 @@ export class ReelsComponent implements OnInit {
       ) {
         reel.status = 'stopped';
         reel.travelSinceStop = undefined;
+        reel.minTravelOnStop = undefined;
         for (const item of reel.items) {
           item.lastPosition = undefined;
           const positionDiff = item.position % 25;
