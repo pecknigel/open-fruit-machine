@@ -67,7 +67,7 @@
   .reel-item-queue-pointers {
     display: flex;
     gap: 3px;
-    margin: 0 3px;
+    margin: 0 3px 3px;
     text-align: center;
     > div {
       flex-grow: 1;
@@ -84,6 +84,7 @@
       flex-grow: 1;
       flex-basis: 0;
       border: 1px solid #912600;
+      font-size: 12px;
     }
   }
   .reel-detail {
