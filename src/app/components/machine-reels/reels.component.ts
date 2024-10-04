@@ -15,10 +15,13 @@ type ReelItemData = {
 };
 type Reels = Reel[];
 
+// TODO: Set up a spin button that starts and stops the reels
+// TODO: Create a debug representation of the reel item queues
 // TODO: Add more items to the reels
 // TODO: Slow reels down before stopping
 // TODO: Randomise the length of each spin
 // TODO: Update random min travel generation so that the number will tend to be larger or smaller based on a curve
+// TODO: Support slim screens
 
 @Component({
   selector: 'app-machine-reels',
@@ -29,27 +32,41 @@ export class ReelsComponent implements OnInit {
   protected showDebug: boolean = true;
 
   protected spinInterval?: any;
-  protected readonly spinIntervalTime: number = 10;
+  protected readonly spinIntervalMillis: number = 10;
+  private readonly spinMovementPerCycle = 0.1;
 
   protected spinStartTime?: number;
 
   protected stopSpinning: boolean = false;
-  protected minTravelOnStop: [number, number] = [10000, 40000];
+  protected minTravelOnStop: [number, number] = [10, 40];
 
-  private readonly spinMovementPerSecond = 100;
-
-  private reelItemPointers: number[] = [0, 0, 0];
-
-  private readonly reelItems: ReelItem[][] = [
+  private readonly reelItemQueues: ReelItem[][] = [
     ['orange', 'grapes', 'lemon', 'cherries', 'cherries'],
     ['lemon', 'cherries', 'orange', 'cherries', 'grapes'],
     ['cherries', 'lemon', 'grapes', 'cherries', 'orange']
   ];
 
+  // TODO Stop this from running other than when the queue pointers change
+  protected renderReelItemQueue(): ReelItem[][] {
+    const reelItemQueues: ReelItem[][] = [];
+    for (let i = 0; i < this.reelItemQueues.length; i++) {
+      reelItemQueues[i] = [];
+      let j = this.reelItemQueuePointers[i];
+      while (reelItemQueues[i].length <= this.reelItemQueues[i].length) {
+        reelItemQueues[i].push(this.reelItemQueues[i][j]);
+        j--;
+        if (j < 0) j = this.reelItemQueues[i].length - 1;
+      }
+    }
+    return reelItemQueues;
+  }
+
+  public reelItemQueuePointers: number[] = [0, 0, 0];
+
   private getNextReelItem(reelIndex: number): ReelItem {
-    const item = this.reelItems[reelIndex][this.reelItemPointers[reelIndex]];
-    this.reelItemPointers[reelIndex] = (this.reelItemPointers[reelIndex] + 1) % this.reelItemCount;
-    return item;
+    this.reelItemQueuePointers[reelIndex] = (this.reelItemQueuePointers[reelIndex] + 1) % this.reelItemQueues[reelIndex].length;
+    if (reelIndex === 1) console.log('Changed Item', reelIndex, this.reelItemQueuePointers[reelIndex]);
+    return this.reelItemQueues[reelIndex][this.reelItemQueuePointers[reelIndex]];
   }
 
   protected reels: Reels = [];
@@ -67,7 +84,7 @@ export class ReelsComponent implements OnInit {
 
   private initialiseReels() {
     for (let i = 0; i < this.reelCount; i++) {
-      this.reelItemPointers[i] = Math.floor(Math.random() * 4);
+      this.reelItemQueuePointers[i] = Math.floor(Math.random() * this.reelItemQueues[i].length);
     }
     for (let i = 0; i < this.reelCount; i++) {
       const items = [];
@@ -91,13 +108,16 @@ export class ReelsComponent implements OnInit {
     if (!this.spinInterval) return;
     if (this.stopSpinning) return;
     this.stopSpinning = true;
+    for(const reel of this.reels) {
+      reel.travelSinceStop = 0;
+      reel.minTravelOnStop = this.generateRandomMinTravelOnStop();
+    }
   }
 
   private startReelCycle() {
     for(const reel of this.reels) {
       reel.status = 'spinning';
       reel.travelSinceStop = undefined;
-      reel.minTravelOnStop = this.generateRandomMinTravelOnStop();
     }
     this.spinStartTime = Date.now();
     // Record the starting position of each item
@@ -106,30 +126,25 @@ export class ReelsComponent implements OnInit {
         item.startPos = item.position;
       }
     }
-    this.spinInterval = setInterval(this.cycleReels.bind(this), this.spinIntervalTime);
-  }
-
-  private generateRandomMinTravelOnStop() {
-    return Math.floor(Math.random() * (this.minTravelOnStop[1] - this.minTravelOnStop[0] + 1) + this.minTravelOnStop[0]);
+    this.spinInterval = setInterval(this.cycleReels.bind(this), this.spinIntervalMillis);
   }
 
   private cycleReels() {
     // Define the base movement of the reel items
-    const baseSpinMovement = (Date.now() - this.spinStartTime!) * (this.spinMovementPerSecond / 1000);
+    const baseSpinMovement = (Date.now() - this.spinStartTime!) * this.spinMovementPerCycle;
     for (const [index, reel] of this.reels.entries()) {
       if (reel.status === 'stopped') continue;
       for (const item of reel.items) {
         item.lastPosition = item.position;
         item.position = (item.startPos! + baseSpinMovement) % 100;
-        item.item = this.getNextReelItem(index);
+        if (item.lastPosition > item.position) item.item = this.getNextReelItem(index);
       }
       if (!this.stopSpinning) continue;
-      reel.travelSinceStop ??= 0;
-      reel.travelSinceStop += this.spinMovementPerSecond;
+      reel.travelSinceStop! += this.spinMovementPerCycle;
       if (
         // TODO Get this working with the new setup, perhaps base it on time rather than movement
         // Has travelled far enough
-        reel.travelSinceStop > reel.minTravelOnStop!
+        reel.travelSinceStop! > reel.minTravelOnStop!
         // Just passed a stopping point
         && reel.items[0].position % 25 >= 0
         && reel.items[0].position % 25 < 5
@@ -153,5 +168,9 @@ export class ReelsComponent implements OnInit {
       this.spinInterval = undefined;
       this.spinStartTime = undefined;
     }
+  }
+
+  private generateRandomMinTravelOnStop() {
+    return Math.floor(Math.random() * (this.minTravelOnStop[1] - this.minTravelOnStop[0] + 1) + this.minTravelOnStop[0]);
   }
 }

@@ -27,7 +27,7 @@
     margin: 0 3px;
   }
   th {
-    width: 85px;
+    width: 105px;
   }
   &.shown {
     button {
@@ -63,6 +63,28 @@
   }
   .reel-items {
     padding: 3px;
+  }
+  .reel-item-queue-pointers {
+    display: flex;
+    gap: 3px;
+    margin: 0 3px;
+    text-align: center;
+    > div {
+      flex-grow: 1;
+      flex-basis: 0;
+      border: 1px solid #912600;
+    }
+  }
+  .reel-item-queues {
+    display: flex;
+    gap: 3px;
+    margin: 0 3px;
+    text-align: center;
+    > div {
+      flex-grow: 1;
+      flex-basis: 0;
+      border: 1px solid #912600;
+    }
   }
 }
 

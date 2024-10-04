@@ -18,6 +18,17 @@
       </tr>
       </tbody>
     </table>
+    <h2>Reel Item Queue</h2>
+    <div class="reel-item-queue-pointers">
+      <div *ngFor="let pointer of reelItemQueuePointers">{{ pointer }}</div>
+    </div>
+    <div class="reel-item-queues">
+      <div *ngFor="let queue of renderReelItemQueue()">
+        <div *ngFor="let item of queue">
+          {{item}}
+        </div>
+      </div>
+    </div>
     <div *ngFor="let reel of reels; let i = index">
       <h2>Reel {{i + 1}}</h2>
       <table>
@@ -27,8 +38,12 @@
             <td>{{ reel.status }}</td>
           </tr>
           <tr>
+            <th>Stop Travel</th>
+            <td>{{ reel.minTravelOnStop ?? '-' }}</td>
+          </tr>
+          <tr>
             <th>Travel</th>
-            <td>{{ reel.travelSinceStop ?? '-' }}</td>
+            <td>{{ reel.travelSinceStop ? (reel.travelSinceStop | number : '1.2-2') : '-'}}</td>
           </tr>
         </tbody>
       </table>

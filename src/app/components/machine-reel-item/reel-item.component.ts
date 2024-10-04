@@ -1,12 +1,16 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 
 @Component({
   selector: 'app-machine-reel-item',
   templateUrl: './reel-item.component.html',
   styleUrl: './reel-item.component.scss'
 })
-export class ReelItemComponent implements OnInit {
-  @Input('type') type: string = '';
+export class ReelItemComponent {
+  @Input('type') set type(type: string) {
+    if (this.itemTypes[type]) {
+      this.item = this.itemTypes[type];
+    }
+  }
   item: [string, string] = ['', ''];
 
   private itemTypes: any = {
@@ -15,10 +19,4 @@ export class ReelItemComponent implements OnInit {
     'lemon': ['reel-item-lemon.svg', 'Lemon'],
     'cherries': ['reel-item-cherries.svg', 'Cherries'],
   };
-
-  ngOnInit() {
-    if (this.itemTypes[this.type]) {
-      this.item = this.itemTypes[this.type];
-    }
-  }
 }
