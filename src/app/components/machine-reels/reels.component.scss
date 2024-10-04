@@ -52,7 +52,7 @@
     font-size: 14px;
     color: #912600;
     background: #cccccc;
-    border: 1px outset orangered;
+    border-bottom: 1px outset orangered;
   }
   h3 {
     padding: 3px;
@@ -83,6 +83,17 @@
     > div {
       flex-grow: 1;
       flex-basis: 0;
+      border: 1px solid #912600;
+    }
+  }
+  .reel-detail {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 3px;
+    margin: 0 3px;
+    padding: 3px 0;
+    > div {
       border: 1px solid #912600;
     }
   }

@@ -29,32 +29,34 @@
         </div>
       </div>
     </div>
-    <div *ngFor="let reel of reels; let i = index">
-      <h2>Reel {{i + 1}}</h2>
-      <table>
-        <tbody>
-          <tr>
-            <th>Status</th>
-            <td>{{ reel.status }}</td>
-          </tr>
-          <tr>
-            <th>Stop Travel</th>
-            <td>{{ reel.minTravelOnStop ?? '-' }}</td>
-          </tr>
-          <tr>
-            <th>Travel</th>
-            <td>{{ reel.travelSinceStop ? (reel.travelSinceStop | number : '1.2-2') : '-'}}</td>
-          </tr>
-        </tbody>
-      </table>
-      <h3>Items</h3>
-      <table>
-        <tbody>
-          <tr class="reel-items" *ngFor="let item of reel.items | orderBy: 'position'">
-            <th>{{item.item}}</th>
-            <td>{{item.position | number:'1.000'}}</td>
-          </tr>
-      </table>
+    <div class="reel-detail">
+      <div *ngFor="let reel of reels; let i = index">
+        <h2>Reel {{i + 1}}</h2>
+        <table>
+          <tbody>
+            <tr>
+              <th>Status</th>
+              <td>{{ reel.status }}</td>
+            </tr>
+            <tr>
+              <th>Stop Travel</th>
+              <td>{{ reel.minTravelOnStop ?? '-' }}</td>
+            </tr>
+            <tr>
+              <th>Travel</th>
+              <td>{{ reel.travelSinceStop ? (reel.travelSinceStop | number : '1.2-2') : '-'}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>Items</h3>
+        <table>
+          <tbody>
+            <tr class="reel-items" *ngFor="let item of reel.items | orderBy: 'position'">
+              <th>{{item.item}}</th>
+              <td>{{item.position | number:'1.000'}}</td>
+            </tr>
+        </table>
+      </div>
     </div>
   </div>
 </div>
