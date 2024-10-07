@@ -13,8 +13,8 @@ type ReelItemData = {
   lastPosition?: number,
   startPos?: number
 };
-type Reels = Reel[];
 
+// TODO: Add an input for controlling the spin speed
 // TODO: Set up a spin button that starts and stops the reels
 // TODO: Create a debug representation of the reel item queues
 // TODO: Add more items to the reels
@@ -32,13 +32,19 @@ export class ReelsComponent implements OnInit {
   protected showDebug: boolean = true;
 
   protected spinInterval?: any;
+  public get isReelsSpinning(): boolean { return !!this.spinInterval }
+
   protected readonly spinIntervalMillis: number = 10;
-  private readonly spinMovementPerCycle = 0.1;
+  private readonly spinMovementPerCycle = 0.15;
 
   protected spinStartTime?: number;
 
   protected stopSpinning: boolean = false;
+  public get isReelsStopping(): boolean { return this.stopSpinning }
+
   protected minTravelOnStop: [number, number] = [10, 40];
+
+  public reelItemQueuePointers: number[] = [0, 0, 0];
 
   private readonly reelItemQueues: ReelItem[][] = [
     ['orange', 'grapes', 'lemon', 'cherries', 'cherries'],
@@ -47,21 +53,21 @@ export class ReelsComponent implements OnInit {
   ];
 
   // TODO Stop this from running other than when the queue pointers change
+  // Render the queues with the next item at the start
   protected renderReelItemQueue(): ReelItem[][] {
     const reelItemQueues: ReelItem[][] = [];
-    for (let i = 0; i < this.reelItemQueues.length; i++) {
+    for (const [i, queue] of this.reelItemQueues.entries()) {
       reelItemQueues[i] = [];
-      let j = this.reelItemQueuePointers[i];
-      while (reelItemQueues[i].length <= this.reelItemQueues[i].length) {
-        reelItemQueues[i].push(this.reelItemQueues[i][j]);
+      let j = this.reelItemQueuePointers[i] + 1;
+      if (j > queue.length - 1) j = 0;
+      while (reelItemQueues[i].length <= queue.length) {
+        reelItemQueues[i].push(queue[j]);
         j--;
-        if (j < 0) j = this.reelItemQueues[i].length - 1;
+        if (j < 0) j = queue.length - 1;
       }
     }
     return reelItemQueues;
   }
-
-  public reelItemQueuePointers: number[] = [0, 0, 0];
 
   private getNextReelItem(reelIndex: number): ReelItem {
     this.reelItemQueuePointers[reelIndex] = (this.reelItemQueuePointers[reelIndex] + 1) % this.reelItemQueues[reelIndex].length;
@@ -69,26 +75,19 @@ export class ReelsComponent implements OnInit {
     return this.reelItemQueues[reelIndex][this.reelItemQueuePointers[reelIndex]];
   }
 
-  protected reels: Reels = [];
-
-  private readonly reelCount = 3;
-  private readonly reelItemCount = 4;
+  protected reels: Reel[] = [];
 
   ngOnInit() {
     this.initialiseReels();
   }
 
-  public get isReelsSpinning(): boolean { return !!this.spinInterval }
-
-  public get isReelsStopping(): boolean { return this.stopSpinning }
-
   private initialiseReels() {
-    for (let i = 0; i < this.reelCount; i++) {
+    for (let i = 0; i < 3; i++) {
       this.reelItemQueuePointers[i] = Math.floor(Math.random() * this.reelItemQueues[i].length);
     }
-    for (let i = 0; i < this.reelCount; i++) {
+    for (let i = 0; i < 3; i++) {
       const items = [];
-      for (let j = 0; j < this.reelItemCount; j++) {
+      for (let j = 0; j < 4; j++) {
         items.push({
           item: this.getNextReelItem(i),
           position: j * 25
